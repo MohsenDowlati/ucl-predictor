@@ -3,6 +3,10 @@ import pandas as pd
 from ucl.db.session import engine
 from ucl.features.elo import EloResult, compute_elo
 
+from ucl.features.form import compute_form
+
+SIGNAL_COLS = ["elo_diff", "form_pts_diff", "form_gf_diff", "form_ga_diff", "rest_days_diff"]
+
 WARMUP_SEASONS = 2 
 
 
@@ -39,15 +43,32 @@ def report(result: EloResult) -> None:
     fav = (decisive.elo_expected_home > 0.5) == (decisive.result == "H")
     print(f"\nHigher-rated side wins {fav.mean():.1%} of {len(decisive)} decisive matches")
 
+def report_signal(features: pd.DataFrame) -> None:
+    done = features[features.result.notna()
+                    & (features.season >= features.season.min() + WARMUP_SEASONS)].copy()
+    done["score"] = done.result.map({"H": 1.0, "D": 0.5, "A": 0.0})
+
+    print("\nCorrelation with outcome (1 = home win, 0.5 = draw, 0 = away win)")
+    print(done[SIGNAL_COLS].corrwith(done.score).round(3).to_string())
+    print("\nOverlap with Elo (correlation with elo_diff)")
+    print(done[SIGNAL_COLS].corr()["elo_diff"].round(3).to_string())
+    print("\nMissing values in feature columns:",
+          int(features.drop(columns=["result"]).isna().sum().sum()))
 
 def run() -> None:
-    result = compute_elo(load_matches())
-    result.features.to_sql("match_features", engine, if_exists="replace", index=False)
-    result.history.to_sql("elo_history", engine, if_exists="replace", index=False)
-    upcoming = int(result.features.result.isna().sum())
-    print(f"{len(result.features)} feature rows ({upcoming} not yet played), "
-          f"{len(result.history)} rating-history rows")
-    report(result)
+    matches = load_matches()
+    print(matches.stage.value_counts(dropna=False).to_string()) 
+
+    elo = compute_elo(matches)
+    features = elo.features.merge(compute_form(matches), on="match_id", validate="one_to_one")
+    features.to_sql("match_features", engine, if_exists="replace", index=False)
+    elo.history.to_sql("elo_history", engine, if_exists="replace", index=False)
+
+    upcoming = int(features.result.isna().sum())
+    print(f"\n{len(features)} feature rows ({upcoming} not yet played), "
+          f"{features.shape[1]} columns")
+    report(elo)
+    report_signal(features)
 
 
 if __name__ == "__main__":
