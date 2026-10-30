@@ -6,6 +6,7 @@ class Settings(BaseSettings):
 
     football_data_token: str
     database_url: str = "sqlite:///data/ucl.db"
+    model_version: str = "v1"
 
 
 settings = Settings()

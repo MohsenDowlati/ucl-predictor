@@ -13,11 +13,13 @@ class FootballDataClient:
     BASE_URL = "https://api.football-data.org/v4"
 
     def __init__(self) -> None:
+        if not settings.football_data_token:
+            raise RuntimeError("Set FOOTBALL_DATA_TOKEN in .env")
         self.http = httpx.Client(
             base_url=self.BASE_URL,
             headers={"X-Auth-Token": settings.football_data_token},
             timeout=30,
-        )
+        )   
 
     def champions_league_matches(self, season: int) -> list[dict]:
         resp = self.http.get("/competitions/CL/matches", params={"season": season})
@@ -26,3 +28,5 @@ class FootballDataClient:
             raise SeasonNotAvailable(f"{season}: {resp.text}")
         resp.raise_for_status()
         return resp.json()["matches"]
+
+             
