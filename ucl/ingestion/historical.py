@@ -2,8 +2,7 @@ from datetime import datetime
 
 from ucl.db.models import Match, Team
 from ucl.db.session import SessionLocal, init_db
-from ucl.ingestion.client import FootballDataClient
-
+from ucl.ingestion.client import FootballDataClient, SeasonNotAvailable
 
 def upsert_matches(session, season: int, raw_matches: list[dict]) -> None:
     for m in raw_matches:
@@ -35,10 +34,16 @@ def run(first_season: int = 2018, last_season: int = 2026) -> None:
     init_db()
     client = FootballDataClient()
     with SessionLocal() as session:
-        for season in range(first_season, last_season + 1):
+        for season in range(last_season, first_season - 1, -1):  # newest first
             print(f"Fetching {season}...")
-            upsert_matches(session, season, client.champions_league_matches(season))
+            try:
+                matches = client.champions_league_matches(season)
+            except SeasonNotAvailable as e:
+                print(f"  skipped -> {e}")
+                continue
+            upsert_matches(session, season, matches)
             session.commit()
+            print(f"  saved {len(matches)} matches")
 
 
 if __name__ == "__main__":
