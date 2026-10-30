@@ -4,6 +4,7 @@ from ucl.db.models import Match, Team
 from ucl.db.session import SessionLocal, init_db
 from ucl.ingestion.client import FootballDataClient, SeasonNotAvailable
 
+
 def upsert_matches(session, season: int, raw_matches: list[dict]) -> None:
     for m in raw_matches:
         home, away = m["homeTeam"], m["awayTeam"]
@@ -13,7 +14,13 @@ def upsert_matches(session, season: int, raw_matches: list[dict]) -> None:
         for t in (home, away):
             session.merge(Team(id=t["id"], name=t["name"], short_name=t.get("shortName")))
 
-        full_time = m["score"]["fullTime"]
+        score = m["score"]
+        duration = score.get("duration", "REGULAR")
+        regular = score.get("regularTime") or score["fullTime"]
+        if duration != "REGULAR" and not score.get("regularTime"):
+            print(f"  warning: match {m['id']} ({duration}) has no regularTime; "
+                  "its goals may include extra time")
+
         session.merge(
             Match(
                 id=m["id"],
@@ -24,17 +31,19 @@ def upsert_matches(session, season: int, raw_matches: list[dict]) -> None:
                 status=m["status"],
                 home_team_id=home["id"],
                 away_team_id=away["id"],
-                home_goals=full_time["home"],
-                away_goals=full_time["away"],
+                home_goals=regular["home"],
+                away_goals=regular["away"],
+                duration=duration,
+                source="football-data",
             )
         )
 
 
-def run(first_season: int = 2018, last_season: int = 2026) -> None:
+def run(first_season: int = 2023, last_season: int = 2026) -> None:
     init_db()
     client = FootballDataClient()
     with SessionLocal() as session:
-        for season in range(last_season, first_season - 1, -1):  # newest first
+        for season in range(last_season, first_season - 1, -1):
             print(f"Fetching {season}...")
             try:
                 matches = client.champions_league_matches(season)

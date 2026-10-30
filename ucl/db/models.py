@@ -19,13 +19,15 @@ class Team(Base):
 class Match(Base):
     __tablename__ = "matches"
 
-    id: Mapped[int] = mapped_column(primary_key=True)  # ID from the API
-    season: Mapped[int]                                # start year, e.g. 2024
+    id: Mapped[int] = mapped_column(primary_key=True)
+    season: Mapped[int]
     utc_date: Mapped[datetime]
     stage: Mapped[str | None]
     matchday: Mapped[int | None]
-    status: Mapped[str]                                # SCHEDULED, FINISHED, ...
+    status: Mapped[str]
     home_team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"))
     away_team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"))
-    home_goals: Mapped[int | None]
+    home_goals: Mapped[int | None]          # score after 90 minutes
     away_goals: Mapped[int | None]
+    duration: Mapped[str | None]            # REGULAR / EXTRA_TIME / PENALTY_SHOOTOUT
+    source: Mapped[str] = mapped_column(default="football-data")
