@@ -1,0 +1,17 @@
+LICENSE
+README.md
+pyproject.toml
+tests/test_db.py
+ucl/__init__.py
+ucl/config.py
+ucl/db/__init__.py
+ucl/db/models.py
+ucl/db/session.py
+ucl/ingestion/__init__.py
+ucl/ingestion/client.py
+ucl/ingestion/historical.py
+ucl_predictor.egg-info/PKG-INFO
+ucl_predictor.egg-info/SOURCES.txt
+ucl_predictor.egg-info/dependency_links.txt
+ucl_predictor.egg-info/requires.txt
+ucl_predictor.egg-info/top_level.txt
