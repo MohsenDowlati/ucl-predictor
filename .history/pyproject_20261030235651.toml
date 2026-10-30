@@ -1,0 +1,24 @@
+[project]
+name = "ucl-predictor"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.162.0",
+    "httpx>=0.28.1",
+    "pandas>=3.1.0",
+    "pydantic-settings>=2.16.2",
+    "scikit-learn>=1.9.1",
+    "sqlalchemy>=2.1.6",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ucl*","api*"]
