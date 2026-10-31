@@ -9,8 +9,8 @@ from sqlalchemy.pool import StaticPool
 
 from api.deps import get_session
 from api.main import app
-from ucl.db.models import Base, Match, Prediction, Team
 from ucl.config import settings
+from ucl.db.models import Base, Match, Prediction, Team
 
 
 @pytest.fixture

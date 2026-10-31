@@ -13,8 +13,8 @@ REPORT_PATH = Path("data/processed/team_resolution.csv")
 MATCH_ID_BASE = 10_000_000   # id = base + (season - 2000) * 1000 + index in season
 
 MONTHS = {m: i for i, m in enumerate(
-    "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(), start=1)}
-WEEKDAYS = "Mon Tue Wed Thu Fri Sat Sun".split()
+    ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], start=1)}
+WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 TITLE_RE = re.compile(r"^=\s*UEFA Champions League\s+(\d{4})/\d{2}")
 COUNT_RE = re.compile(r"^#\s*Matches\s+(\d+)")

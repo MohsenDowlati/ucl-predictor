@@ -2,7 +2,6 @@ import pandas as pd
 
 from ucl.db.session import engine
 from ucl.features.elo import EloResult, compute_elo
-
 from ucl.features.form import compute_form
 
 SIGNAL_COLS = ["elo_diff", "form_pts_diff", "form_gf_diff", "form_ga_diff", "rest_days_diff"]

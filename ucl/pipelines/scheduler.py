@@ -1,13 +1,15 @@
 import logging
 import time
 from collections.abc import Iterable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 
 from ucl.db.models import Match
 from ucl.db.session import SessionLocal
 from ucl.pipelines import refresh
+
+from ucl.monitoring.report import run_checks
 
 log = logging.getLogger("scheduler")
 
@@ -19,7 +21,7 @@ MIN_SLEEP = 60
 
 
 def utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)   
+    return datetime.now(UTC).replace(tzinfo=None)   
 
 
 def choose_interval(now: datetime, kickoffs: Iterable[datetime]) -> int:
@@ -49,9 +51,19 @@ def next_sleep() -> int:
         return LIVE_EVERY
 
 
+def log_monitoring() -> None:
+    """Warnings go to the log; the full report is `python -m ucl.monitoring.report`."""
+    try:
+        for level, message in run_checks():
+            if level == "WARN":
+                log.warning("monitor: %s", message)
+    except Exception:
+        log.exception("monitoring failed")
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    force = True            
+    force = True           
     while True:
         try:
             changed = refresh.run(force=force)
@@ -60,6 +72,7 @@ def main() -> None:
                      "data changed, features and predictions rebuilt" if changed else "no changes")
         except Exception:
             log.exception("refresh failed; will retry")
+        log_monitoring()           
         sleep_for = next_sleep()
         log.info("next refresh in %d minutes", sleep_for // 60)
         time.sleep(sleep_for)
