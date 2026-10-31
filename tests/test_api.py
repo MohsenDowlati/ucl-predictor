@@ -58,7 +58,7 @@ def test_upcoming_uses_newest_prediction_of_the_active_model(client):
     body = client.get("/matches?status=upcoming").json()
     assert [m["id"] for m in body] == [11]
     pred = body[0]["prediction"]
-    assert pred["home"] == 0.25 and pred["model_version"] == "v1"
+    assert pred["home"] == 0.25 and pred["model_version"] == "v2"
     assert body[0]["kickoff"].endswith("Z")
 
 
