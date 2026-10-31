@@ -10,10 +10,12 @@ from sqlalchemy.pool import StaticPool
 from api.deps import get_session
 from api.main import app
 from ucl.db.models import Base, Match, Prediction, Team
+from ucl.config import settings
 
 
 @pytest.fixture
-def client():
+def client(monkeypatch):
+    monkeypatch.setattr(settings, "model_version", "v1")
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False},
                            poolclass=StaticPool)
     Base.metadata.create_all(engine)
@@ -58,7 +60,7 @@ def test_upcoming_uses_newest_prediction_of_the_active_model(client):
     body = client.get("/matches?status=upcoming").json()
     assert [m["id"] for m in body] == [11]
     pred = body[0]["prediction"]
-    assert pred["home"] == 0.25 and pred["model_version"] == "v2"
+    assert pred["home"] == 0.25 and pred["model_version"] == "v1"
     assert body[0]["kickoff"].endswith("Z")
 
 
