@@ -1,8 +1,7 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
 
 UPCOMING_STATUSES = ("SCHEDULED", "TIMED")
 
@@ -47,4 +46,4 @@ class Prediction(Base):
     p_draw: Mapped[float]
     p_away: Mapped[float]
     created_at: Mapped[datetime] = mapped_column(
-        default=lambda: datetime.now(timezone.utc))
+        default=lambda: datetime.now(UTC))

@@ -1,7 +1,7 @@
 import logging
 import time
 from collections.abc import Iterable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 
@@ -19,7 +19,7 @@ MIN_SLEEP = 60
 
 
 def utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)   
+    return datetime.now(UTC).replace(tzinfo=None)   
 
 
 def choose_interval(now: datetime, kickoffs: Iterable[datetime]) -> int:

@@ -4,7 +4,13 @@ from datetime import datetime, timedelta
 import pandas as pd
 import pytest
 
-from ucl.features.elo import Elo, EloConfig, compute_elo, expected_score, goal_multiplier
+from ucl.features.elo import (
+    Elo,
+    EloConfig,
+    compute_elo,
+    expected_score,
+    goal_multiplier,
+)
 
 FEATURE_COLS = ["elo_home", "elo_away", "elo_expected_home"]
 
