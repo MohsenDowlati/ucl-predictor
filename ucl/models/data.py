@@ -4,12 +4,13 @@ WARMUP_END = 2012
 TRAIN_END = 2020
 VAL_END = 2022         # test = every season after this
 
+BINARY_FEATURES = {"neutral", "is_knockout"}
+
 ELO_FEATURES = ["elo_diff", "neutral"]
 FULL_FEATURES = ELO_FEATURES + [
-    "form_pts_diff", "form_gf_diff", "form_ga_diff", "rest_days_diff", "is_knockout",
+    "form_pts_diff", "form_gf_diff", "form_ga_diff", "is_knockout",
 ]
 FEATURE_SETS = {"elo_only": ELO_FEATURES, "full": FULL_FEATURES}
-
 
 def load_features() -> pd.DataFrame:
     from ucl.db.session import engine
