@@ -55,9 +55,10 @@ def report_signal(features: pd.DataFrame) -> None:
     print("\nMissing values in feature columns:",
           int(features.drop(columns=["result"]).isna().sum().sum()))
 
-def run() -> None:
+def run(verbose: bool = True) -> None:
     matches = load_matches()
-    print(matches.stage.value_counts(dropna=False).to_string()) 
+    if verbose:
+        print(matches.stage.value_counts(dropna=False).to_string())
 
     elo = compute_elo(matches)
     features = elo.features.merge(compute_form(matches), on="match_id", validate="one_to_one")
@@ -65,10 +66,11 @@ def run() -> None:
     elo.history.to_sql("elo_history", engine, if_exists="replace", index=False)
 
     upcoming = int(features.result.isna().sum())
-    print(f"\n{len(features)} feature rows ({upcoming} not yet played), "
+    print(f"{len(features)} feature rows ({upcoming} not yet played), "
           f"{features.shape[1]} columns")
-    report(elo)
-    report_signal(features)
+    if verbose:
+        report(elo)
+        report_signal(features)
 
 
 if __name__ == "__main__":
