@@ -7,7 +7,12 @@ from sklearn.preprocessing import StandardScaler
 from ucl.models.clip import QuantileClipper
 from ucl.models.data import BINARY_FEATURES, FEATURE_SETS, WARMUP_END, load_features
 from ucl.models.evaluate import (
-    CLASSES, paired_bootstrap, per_match_log_loss, reliability, scores)
+    CLASSES,
+    paired_bootstrap,
+    per_match_log_loss,
+    reliability,
+    scores,
+)
 from ucl.models.train import climatology, proba_hda
 
 FIRST_EVAL = 2016      # 3 seasons of training data (2013-2015) before the first test block

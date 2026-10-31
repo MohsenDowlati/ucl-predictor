@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-
 from ucl.models.walkforward import decay_weights, splits
 
 

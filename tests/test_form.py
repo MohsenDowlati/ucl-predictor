@@ -5,7 +5,11 @@ import pandas as pd
 import pytest
 
 from ucl.features.form import (
-    DEFAULT_PRIOR_GOALS, DEFAULT_PRIOR_PTS, MAX_REST, compute_form)
+    DEFAULT_PRIOR_GOALS,
+    DEFAULT_PRIOR_PTS,
+    MAX_REST,
+    compute_form,
+)
 
 COLS = ["home_form_pts", "home_form_gf", "home_form_ga", "home_rest_days",
         "away_form_pts", "away_form_gf", "away_form_ga", "away_rest_days"]

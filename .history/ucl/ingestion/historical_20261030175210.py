@@ -4,6 +4,7 @@ from ucl.db.models import Match, Team
 from ucl.db.session import SessionLocal, init_db
 from ucl.ingestion.client import FootballDataClient, SeasonNotAvailable
 
+
 def upsert_matches(session, season: int, raw_matches: list[dict]) -> None:
     for m in raw_matches:
         home, away = m["homeTeam"], m["awayTeam"]

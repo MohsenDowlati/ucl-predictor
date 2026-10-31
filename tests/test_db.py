@@ -1,5 +1,5 @@
-from ucl.db.session import SessionLocal
 from ucl.db.models import Match
+from ucl.db.session import SessionLocal
 
 
 def test_no_negative_goals():

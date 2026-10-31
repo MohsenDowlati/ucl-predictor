@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ from ucl.db.models import Match, Prediction, Team
 
 def utc(dt: datetime) -> datetime:
     """Stored timestamps are naive UTC for current fixtures; mark them so JSON ends in Z."""
-    return dt.replace(tzinfo=timezone.utc)
+    return dt.replace(tzinfo=UTC)
 
 
 def to_probs(p: Prediction) -> Probabilities:
