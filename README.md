@@ -6,6 +6,10 @@ An end-to-end machine-learning project: it ingests Champions League results, rat
 
 ![CI](https://github.com/MohsenDowlati/ucl-predictor/actions/workflows/ci.yml/badge.svg)
 
+<div align="center">
+  <img src="UEFA_Champions_League.svg" alt="UCL" width="200"/>
+</div>
+
 
 
 ## Features
