@@ -21,4 +21,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["ucl*"]
+include = ["ucl*","api*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
