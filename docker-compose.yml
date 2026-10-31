@@ -1,0 +1,40 @@
+x-backend: &backend
+  build: .
+  image: ucl-predictor-backend
+  env_file: .env
+  restart: unless-stopped
+  volumes:
+    - dbdata:/app/data
+    - ./artifacts:/app/artifacts:ro
+
+services:
+  api:
+    <<: *backend
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "ucl.pipelines.scheduler"]
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  dbdata:
+    name: ucl_dbdata
